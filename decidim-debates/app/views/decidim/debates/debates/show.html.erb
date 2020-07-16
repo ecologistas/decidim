@@ -14,7 +14,6 @@ edit_link(
 %>
 
 <div class="row column view-header">
-
   <%= link_to :debates, class: "small hollow" do %>
     <%= icon "chevron-left", class: "icon--small", role: "img", "aria-hidden": true %>
     <%= t(".back") %>
@@ -26,7 +25,6 @@ edit_link(
 
   <% debate_presenter = Decidim::Debates::DebatePresenter.new(debate) %>
   <%= cell "decidim/author", debate_presenter.author, from: debate, context: { extra_classes: ["author-data--small"] } %>
-
 </div>
 <div class="row">
   <div class="columns section view-side mediumlarge-4 mediumlarge-push-8 large-3 large-push-9">
@@ -37,7 +35,7 @@ edit_link(
     <% end %>
     <% close_debate_action_text = (debate.closed? ? ".edit_conclusions" : ".close_debate" ) %>
     <% if allowed_to?(:close, :debate, debate: debate) %>
-      <button type="button" data-open="closeDebateModal" title="<%= t(close_debate_action_text) %>" aria-controls="closeDebateModal" aria-haspopup="true" tabindex="0" class="button hollow expanded button-sc button--icon follow-button">
+      <button type="button" data-open="closeDebateModal" title="<%= t(close_debate_action_text) %>" aria-controls="cendorse" aria-haspopup="true" tabindex="0" class="button hollow expanded button-sc button--icon follow-button">
         <%= t(close_debate_action_text) %>
       </button>
     <% elsif admin_allowed_to?(:close, :debate, debate: debate) %>
@@ -53,7 +51,15 @@ edit_link(
             <%= l debate.start_time, format: "%H:%M" %> - <%= l debate.end_time, format: "%H:%M" %>
           </div>
         <% end %>
-        <%= render partial: "decidim/shared/follow_button", locals: { followable: debate, large: false } %>
+
+        <% if endorsements_enabled? && allowed_to?(:endorse, :debate, debate: debate) %>
+          <div class="row collapse buttons__row">
+            <div class="column small-12 collapse">
+              <%= endorsement_buttons_cell(debate) %>
+            </div>
+          </div>
+        <% end %>
+        <%= follow_button_for(debate) %>
       </div>
     </div>
     <%= resource_reference(debate) %>
@@ -89,6 +95,8 @@ edit_link(
           <li><%= link_to translated_attribute(debate.category.name), debates_path(filter: { category_id: debate.category.id }) %></li>
         </ul>
       <% end %>
+
+      <%= cell "decidim/endorsers_list", debate %>
     </div>
   </div>
 </div>
