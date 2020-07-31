@@ -419,6 +419,9 @@ en:
           unfold: Unfold
         index_header:
           new_initiative: New initiative
+        initiatives:
+          closed_initiatives_warning: Currently, there are no open initiatives, but here you can find all the closed initiatives listed.
+          no_initiatives_warning: No initiatives match your search criteria.
         interactions:
           comments_count:
             count:
